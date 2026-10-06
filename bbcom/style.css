@@ -1,0 +1,70 @@
+/* 
+ * PurrPerfect 喵品選物 - style.css 
+ * 溫馨質感貓咪寵物用品專用獨立樣式表
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+/* 全域變數定義 */
+:root {
+  --color-cream-50: #FDFBF7;
+  --color-cream-100: #F7F3EB;
+  --color-cream-200: #EFE6D5;
+  --color-warmwood-500: #A6825C;
+  --color-warmwood-600: #8A6543;
+  --color-warmwood-700: #6E4E32;
+  --color-cataccent: #E88D67;
+  --color-cataccent-hover: #D0744E;
+}
+
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background-color: var(--color-cream-50);
+  color: #4A3E3D;
+  margin: 0;
+  padding: 0;
+}
+
+/* 玻璃擬態選單 */
+.glass-nav {
+  background: rgba(253, 251, 247, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 卡片懸浮動畫效果 */
+.product-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px -8px rgba(166, 130, 92, 0.15);
+}
+
+.img-zoom-container {
+  overflow: hidden;
+}
+
+.img-zoom {
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .img-zoom {
+  transform: scale(1.08);
+}
+
+/* 滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cream-200);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warmwood-500);
+}

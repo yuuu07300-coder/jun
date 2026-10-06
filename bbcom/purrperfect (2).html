@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PurrPerfect 喵品選物 | 打造毛孩的理想生活美學</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#F7F3EB',
+                            200: '#EFE6D5',
+                            300: '#E2D4BB',
+                        },
+                        warmwood: {
+                            400: '#C2A382',
+                            500: '#A6825C',
+                            600: '#8A6543',
+                            700: '#6E4E32',
+                        },
+                        cataccent: {
+                            light: '#FFF5EB',
+                            DEFAULT: '#E88D67',
+                            hover: '#D0744E',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #4A3E3D;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F3EB;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D8C3A5;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A6825C;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(253, 251, 247, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Card Hover Effects */
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px -8px rgba(166, 130, 92, 0.15);
+        }
+
+        /* Image Zoom */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom {
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover .img-zoom {
+            transform: scale(1.08);
+        }
+
+        /* Modal Blur Backing */
+        .modal-backdrop {
+            background-color: rgba(45, 36, 32, 0.5);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-cream-50 text-stone-700 antialiased selection:bg-cataccent selection:text-white flex flex-col min-h-screen">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-warmwood-600 text-cream-50 text-xs sm:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-center items-center gap-2">
+        <i class="fa-solid fa-paw text-cataccent-light"></i>
+        <span>全館消費滿 NT$1,000 即享免運優惠！新會員首購折 NT$100 折扣碼【PURR100】</span>
+    </div>
+
+    <!-- Main Header / Navigation -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-cream-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-cataccent text-white flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-cat"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-extrabold tracking-tight text-warmwood-700 block font-sans">PurrPerfect</span>
+                        <span class="text-xs tracking-widest text-warmwood-500 font-medium block -mt-1">喵品選物</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#products" onclick="filterCategory('all')" class="nav-link text-warmwood-700 hover:text-cataccent transition-colors py-1 border-b-2 border-cataccent">全部商品</a>
+                    <a href="#products" onclick="filterCategory('hot')" class="nav-link text-stone-600 hover:text-cataccent transition-colors py-1 border-b-2 border-transparent">熱銷推薦</a>
+                    <a href="#products" onclick="filterCategory('life')" class="nav-link text-stone-600 hover:text-cataccent transition-colors py-1 border-b-2 border-transparent">主子用品</a>
+                    <a href="#products" onclick="filterCategory('dining')" class="nav-link text-stone-600 hover:text-cataccent transition-colors py-1 border-b-2 border-transparent">餐具水機</a>
+                    <a href="#products" onclick="filterCategory('toys')" class="nav-link text-stone-600 hover:text-cataccent transition-colors py-1 border-b-2 border-transparent">玩具貓砂</a>
+                </nav>
+
+                <!-- Header Actions (Search, Cart, User) -->
+                <div class="flex items-center space-x-4 sm:space-x-6">
+                    <!-- Search Bar (Desktop) -->
+                    <div class="relative hidden lg:block w-48 xl:w-64">
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋貓咪好物..." 
+                            class="w-full bg-cream-100/80 text-stone-800 text-sm rounded-full pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-cataccent/50 focus:bg-white border border-cream-200 transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-sm"></i>
+                    </div>
+
+                    <!-- User Account Icon -->
+                    <button class="p-2 text-stone-600 hover:text-cataccent transition-colors rounded-full hover:bg-cream-100" title="會員中心">
+                        <i class="fa-regular fa-user text-lg"></i>
+                    </button>
+
+                    <!-- Cart Icon Button -->
+                    <button onclick="toggleCartDrawer()" class="relative p-2 text-stone-700 hover:text-cataccent transition-colors rounded-full hover:bg-cream-100" title="購物車">
+                        <i class="fa-solid fa-bag-shopping text-xl"></i>
+                        <span id="cartBadge" class="absolute top-0 right-0 bg-cataccent text-white text-[11px] font-bold rounded-full w-5 h-5 flex items-center justify-center transform translate-x-1 -translate-y-1 shadow-sm">0</span>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-stone-700 hover:text-cataccent transition-colors">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-cream-50 border-b border-cream-200 px-4 pt-2 pb-4 space-y-3">
+            <div class="relative my-2">
+                <input type="text" id="mobileSearchInput" oninput="handleSearchMobile()" placeholder="搜尋貓咪好物..." 
+                    class="w-full bg-cream-100 text-stone-800 text-sm rounded-full pl-9 pr-4 py-2 border border-cream-200">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-sm"></i>
+            </div>
+            <a href="#products" onclick="filterCategory('all'); toggleMobileMenu()" class="block px-3 py-2 rounded-lg font-medium text-warmwood-700 hover:bg-cream-100">全部商品</a>
+            <a href="#products" onclick="filterCategory('hot'); toggleMobileMenu()" class="block px-3 py-2 rounded-lg font-medium text-stone-600 hover:bg-cream-100">熱銷推薦</a>
+            <a href="#products" onclick="filterCategory('life'); toggleMobileMenu()" class="block px-3 py-2 rounded-lg font-medium text-stone-600 hover:bg-cream-100">主子用品</a>
+            <a href="#products" onclick="filterCategory('dining'); toggleMobileMenu()" class="block px-3 py-2 rounded-lg font-medium text-stone-600 hover:bg-cream-100">餐具水機</a>
+            <a href="#products" onclick="filterCategory('toys'); toggleMobileMenu()" class="block px-3 py-2 rounded-lg font-medium text-stone-600 hover:bg-cream-100">玩具貓砂</a>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="relative bg-gradient-to-r from-cream-100 via-cream-50 to-cream-200 py-16 sm:py-24 overflow-hidden border-b border-cream-200">
+        <div class="absolute -top-12 -right-12 w-96 h-96 bg-cataccent/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-80 h-80 bg-warmwood-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                
+                <!-- Text Content -->
+                <div class="space-y-6 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cataccent/10 text-cataccent text-xs font-bold tracking-wider uppercase">
+                        <i class="fa-solid fa-sparkles"></i> 質感貓咪極致生活
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-800 leading-tight">
+                        給主子溫柔陪伴，<br>
+                        <span class="text-cataccent">打造質感美學生活。</span>
+                    </h1>
+                    <p class="text-stone-600 text-base sm:text-lg leading-relaxed max-w-xl">
+                        PurrPerfect 嚴選高質感、安全無毒與兼具極簡美學的貓咪用品。從舒壓玩具到健康水機，傾心照顧每隻毛孩的日常點滴。
+                    </p>
+                    <div class="pt-2 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                        <a href="#products" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-cataccent hover:bg-cataccent-hover text-white font-semibold text-base shadow-lg shadow-cataccent/30 transition-all transform hover:-translate-y-0.5 text-center">
+                            探索選物系列 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                        <a href="#codeSection" class="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white hover:bg-cream-100 border border-cream-300 text-stone-700 font-medium text-base transition-all text-center">
+                            <i class="fa-solid fa-code text-warmwood-500 mr-2"></i>檢視網站原始碼
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Image Grid / Highlight Card -->
+                <div class="relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white">
+                        <img src="https://images.unsplash.com/photo-1545249390-6bdfa286032f?auto=format&fit=crop&w=800&q=80" onerror="this.onerror=null; this.src='https://placehold.co/600x600/EFE6D5/6E4E32?text=PurrPerfect+Cat+Life';" alt="PurrPerfect 精選貓咪用品" class="w-full h-80 sm:h-96 object-cover">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-6 text-white">
+                            <span class="text-xs bg-cataccent font-bold px-2.5 py-1 rounded-md mb-2 inline-block">本週熱銷 No.1</span>
+                            <h3 class="text-xl font-bold">喵喵雲朵舒壓抓板</h3>
+                            <p class="text-xs text-cream-100 opacity-90">高密度可再生抓繩，附帶隱藏木天寮槽</p>
+                        </div>
+                    </div>
+                    <!-- Floating Badge -->
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-cream-200 hidden sm:flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-cream-100 flex items-center justify-center text-cataccent text-xl">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-stone-400 font-medium">貓奴好評推薦</div>
+                            <div class="text-sm font-bold text-stone-800">超過 10,000+ 個滿意家庭</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Features Section -->
+    <section class="py-12 bg-white border-b border-cream-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                
+                <div class="p-4 rounded-2xl bg-cream-50/50 hover:bg-cream-100/50 transition-colors">
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-cream-200/60 flex items-center justify-center text-warmwood-600 text-xl">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">滿千免運優惠</h4>
+                    <p class="text-xs text-stone-500 mt-1">全館單筆滿 $1,000 即享免運</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-cream-50/50 hover:bg-cream-100/50 transition-colors">
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-cream-200/60 flex items-center justify-center text-warmwood-600 text-xl">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">嚴選無毒材質</h4>
+                    <p class="text-xs text-stone-500 mt-1">100% 通過安全寵物品質檢驗</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-cream-50/50 hover:bg-cream-100/50 transition-colors">
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-cream-200/60 flex items-center justify-center text-warmwood-600 text-xl">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">7 天鑑賞安心退</h4>
+                    <p class="text-xs text-stone-500 mt-1">完整售後服務與退換貨保障</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-cream-50/50 hover:bg-cream-100/50 transition-colors">
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-cream-200/60 flex items-center justify-center text-warmwood-600 text-xl">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h4 class="font-bold text-stone-800 text-sm sm:text-base">24H 快速出貨</h4>
+                    <p class="text-xs text-stone-500 mt-1">現貨商品下單後快速寄出</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid Section -->
+    <section id="products" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-grow">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <span class="text-xs font-bold tracking-widest text-cataccent uppercase">Curated Collections</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-800 mt-1">10 大熱門創意貓咪好物</h2>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap gap-2 text-sm font-medium">
+                <button onclick="filterCategory('all')" id="btn-all" class="cat-tab px-4 py-2 rounded-full bg-warmwood-600 text-white shadow-sm transition-all">全部商品</button>
+                <button onclick="filterCategory('hot')" id="btn-hot" class="cat-tab px-4 py-2 rounded-full bg-cream-200 text-stone-700 hover:bg-cream-300 transition-all">熱銷星級</button>
+                <button onclick="filterCategory('life')" id="btn-life" class="cat-tab px-4 py-2 rounded-full bg-cream-200 text-stone-700 hover:bg-cream-300 transition-all">生活起居</button>
+                <button onclick="filterCategory('dining')" id="btn-dining" class="cat-tab px-4 py-2 rounded-full bg-cream-200 text-stone-700 hover:bg-cream-300 transition-all">飲水飲食</button>
+                <button onclick="filterCategory('toys')" id="btn-toys" class="cat-tab px-4 py-2 rounded-full bg-cream-200 text-stone-700 hover:bg-cream-300 transition-all">玩具外出</button>
+            </div>
+        </div>
+
+        <!-- Products Container -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            <!-- Dynamic JavaScript Product Cards Insertion -->
+        </div>
+
+    </section>
+
+    <!-- Quick View Modal -->
+    <div id="quickViewModal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all relative">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-cream-100 hover:bg-cream-200 rounded-full flex items-center justify-center text-stone-600 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="grid md:grid-cols-2">
+                <div class="bg-cream-100 h-64 md:h-full relative overflow-hidden flex items-center justify-center">
+                    <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <span id="modalCategory" class="text-xs bg-cataccent/10 text-cataccent font-bold px-2.5 py-1 rounded-md mb-2 inline-block"></span>
+                        <h3 id="modalTitle" class="text-xl font-bold text-stone-800"></h3>
+                        <p id="modalSubtitle" class="text-xs text-stone-400 mb-3 font-mono"></p>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div id="modalRating" class="text-amber-400 text-xs"></div>
+                            <span id="modalReviews" class="text-xs text-stone-400"></span>
+                        </div>
+                        <p id="modalDesc" class="text-stone-600 text-sm leading-relaxed mb-4"></p>
+                        
+                        <div class="border-t border-cream-200 pt-3 space-y-2 text-xs text-stone-500">
+                            <div><span class="font-bold text-stone-700">材質亮點：</span><span id="modalMaterial"></span></div>
+                            <div><span class="font-bold text-stone-700">尺寸規格：</span><span id="modalSize"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-cream-200 mt-6 flex items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs text-stone-400 block">售價</span>
+                            <span id="modalPrice" class="text-2xl font-extrabold text-cataccent"></span>
+                        </div>
+                        <button id="modalAddBtn" class="flex-1 bg-cataccent hover:bg-cataccent-hover text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> 加入購物車
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none">
+        <div id="cartBackdrop" onclick="toggleCartDrawer()" class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 transition-opacity pointer-events-none"></div>
+        
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cartContent" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 pointer-events-auto">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 bg-cream-50 border-b border-cream-200 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-cataccent text-xl"></i>
+                        <h3 class="text-lg font-bold text-stone-800">您的購物車</h3>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="p-2 text-stone-400 hover:text-stone-600 rounded-full">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Cart List -->
+                <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Dynamic Cart Items -->
+                </div>
+
+                <!-- Drawer Footer -->
+                <div class="p-6 bg-cream-50 border-t border-cream-200 space-y-4">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-stone-500">
+                            <span>商品小計</span>
+                            <span id="cartSubtotal">NT$ 0</span>
+                        </div>
+                        <div class="flex justify-between text-stone-500">
+                            <span>運費</span>
+                            <span id="cartShipping">NT$ 0</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-extrabold text-stone-800 pt-2 border-t border-cream-200">
+                            <span>結帳總金額</span>
+                            <span id="cartTotal" class="text-cataccent">NT$ 0</span>
+                        </div>
+                    </div>
+                    <button onclick="checkout()" class="w-full bg-cataccent hover:bg-cataccent-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-cataccent/20 transition-all text-center flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-credit-card"></i> 前往安全結帳
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Viewer & File Downloader Section -->
+    <section id="codeSection" class="py-16 bg-cream-100 border-t border-cream-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <span class="text-xs font-bold tracking-widest text-warmwood-600 uppercase">Developer Tools</span>
+                <h2 class="text-2xl font-bold text-stone-800 mt-1">下載與對照網站原始碼</h2>
+                <p class="text-stone-600 text-sm mt-2">提供分開獨立的 index.html 與外部 style.css 檔案下載與即時複製。</p>
+            </div>
+
+            <!-- Tabs and Action Buttons -->
+            <div class="bg-white rounded-2xl shadow-md border border-cream-200 overflow-hidden">
+                <div class="bg-stone-800 px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-stone-700">
+                    <div class="flex space-x-2">
+                        <button onclick="switchCodeTab('html')" id="tab-html" class="px-4 py-1.5 rounded-lg text-sm font-semibold bg-cataccent text-white transition-colors">
+                            index.html
+                        </button>
+                        <button onclick="switchCodeTab('css')" id="tab-css" class="px-4 py-1.5 rounded-lg text-sm font-semibold bg-stone-700 text-stone-300 hover:text-white transition-colors">
+                            style.css
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="copyCurrentCode()" class="px-3.5 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-medium transition-colors flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 複製程式碼
+                        </button>
+                        <button onclick="downloadCodeFiles()" class="px-3.5 py-1.5 rounded-lg bg-warmwood-500 hover:bg-warmwood-600 text-white text-xs font-medium transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-download"></i> 下載檔案 (.zip/files)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Container -->
+                <div class="p-4 bg-stone-900 text-stone-200 font-mono text-xs overflow-x-auto max-h-96">
+                    <pre id="codeDisplay" class="whitespace-pre"><code></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-stone-800 text-cream-200 py-12 border-t border-stone-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-cataccent text-white flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-cat"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white font-sans">PurrPerfect</span>
+                    </div>
+                    <p class="text-xs text-stone-400 leading-relaxed">
+                        PurrPerfect 喵品選物，致力於為貓咪與貓奴打造兼具生活美學與實用功能的寵物精品網站。
+                    </p>
+                    <div class="flex space-x-3 text-stone-400 text-lg">
+                        <a href="#" class="hover:text-cataccent transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="hover:text-cataccent transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="hover:text-cataccent transition-colors"><i class="fa-brands fa-line"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links 1 -->
+                <div>
+                    <h5 class="text-sm font-bold text-white mb-3">商品分類</h5>
+                    <ul class="space-y-2 text-xs text-stone-400">
+                        <li><a href="#products" onclick="filterCategory('life')" class="hover:text-cream-100">貓抓板與高空吊床</a></li>
+                        <li><a href="#products" onclick="filterCategory('dining')" class="hover:text-cream-100">自動循環水機 & 陶瓷碗</a></li>
+                        <li><a href="#products" onclick="filterCategory('toys')" class="hover:text-cream-100">薄荷玩具 & 逗貓棒</a></li>
+                        <li><a href="#products" onclick="filterCategory('life')" class="hover:text-cream-100">美型除臭貓砂盆</a></li>
+                    </ul>
+                </div>
+
+                <!-- Links 2 -->
+                <div>
+                    <h5 class="text-sm font-bold text-white mb-3">顧客服務</h5>
+                    <ul class="space-y-2 text-xs text-stone-400">
+                        <li><a href="#" class="hover:text-cream-100">購物說明與運費政策</a></li>
+                        <li><a href="#" class="hover:text-cream-100">退換貨須知</a></li>
+                        <li><a href="#" class="hover:text-cream-100">常見問題 FAQ</a></li>
+                        <li><a href="#" class="hover:text-cream-100">會員權益與購物金</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h5 class="text-sm font-bold text-white mb-3">訂閱電子報</h5>
+                    <p class="text-xs text-stone-400 mb-3">訂閱即可獲得最新貓咪照護新知與專屬優惠券。</p>
+                    <div class="flex">
+                        <input type="email" placeholder="請輸入您的 Email" class="bg-stone-700 text-white text-xs px-3 py-2 rounded-l-lg focus:outline-none w-full border border-stone-600">
+                        <button class="bg-cataccent hover:bg-cataccent-hover text-white text-xs px-4 py-2 rounded-r-lg font-bold transition-colors">訂閱</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-stone-700 pt-6 text-center text-xs text-stone-500">
+                <p>&copy; 2026 PurrPerfect 喵品選物. All rights reserved. 僅供教學與範例展示使用。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 10 Products Dataset
+        const products = [
+            {
+                id: 1,
+                name: "喵喵雲朵舒壓抓板",
+                enName: "CloudPaws Scratching Mat",
+                price: 580,
+                image: "images/01.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1545249390-6bdfa286032f?auto=format&fit=crop&w=600&q=80",
+                tag: "牆面/地面兩用",
+                rating: 4.9,
+                reviews: 128,
+                category: "life",
+                isHot: true,
+                desc: "採用高密度可再生環保抓繩與擬真雲朵形狀設計，附帶隱藏式木天寮粉槽，讓貓咪伸展抓撓的同時能透過氣味達到舒緩壓力的效果。",
+                material: "天然劍麻繩、加厚羊毛氈、實木粉槽",
+                size: "45 x 30 x 3 cm"
+            },
+            {
+                id: 2,
+                name: "漫步月球高空吊床",
+                enName: "Lunar Roam Cat Hammock",
+                price: 890,
+                image: "images/02.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+                tag: "窗台吸盤式",
+                rating: 4.8,
+                reviews: 95,
+                category: "life",
+                isHot: true,
+                desc: "太空艙造型搭配超強吸力工業級吸盤與透氣羊毛氈，讓主子能安全地「登月高空」曬太陽、俯瞰領域。",
+                material: "工業級強效吸盤、透氣加厚羊毛氈、金屬鋼架",
+                size: "55 x 35 cm（耐重高達 18kg）"
+            },
+            {
+                id: 3,
+                name: "微風森林自動循環水機",
+                enName: "Breeze Forest Water Fountain",
+                price: 1280,
+                image: "images/03.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=600&q=80",
+                tag: "極靜音/四重過濾",
+                rating: 5.0,
+                reviews: 210,
+                category: "dining",
+                isHot: true,
+                desc: "仿造野外湧泉與落葉流水聲的極靜音設計，配備多重活性碳與麥飯石濾芯，溫和誘導不愛喝水的貓咪增加飲水量。",
+                material: "食品級 ABS、麥飯石活性碳濾芯",
+                size: "2.5L 大容量 / 20 x 20 x 15 cm"
+            },
+            {
+                id: 4,
+                name: "藏貓貓迷宮隧道床",
+                enName: "Hide & Seek Tunnel Bed",
+                price: 1450,
+                image: "images/04.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80",
+                tag: "組合保暖貓窩",
+                rating: 4.7,
+                reviews: 82,
+                category: "life",
+                isHot: false,
+                desc: "兼具「躲藏」與「睡眠」雙重功能，絨毛內襯搭配耐刮外層，毛孩可以在隧道內穿梭穿梭，也能直接躺在中央凹槽放鬆。",
+                material: "耐磨仿羊羔絨、高彈力 PP 棉",
+                size: "直徑 85 cm / 隧道口徑 25 cm"
+            },
+            {
+                id: 5,
+                name: "日安晨光陶瓷高腳碗",
+                enName: "Morning Light Ceramic Bowl Set",
+                price: 680,
+                image: "images/05.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=600&q=80",
+                tag: "護頸 15 度斜角",
+                rating: 4.9,
+                reviews: 164,
+                category: "dining",
+                isHot: true,
+                desc: "15 度微傾斜與加高架設計，減少貓咪進食時的頸椎負擔與嘔吐風險；食品級手工釉面陶瓷，不易滋生細菌避免黑下巴。",
+                material: "高溫燒製手工陶瓷、天然竹木架",
+                size: "碗口直徑 14 cm / 高度 12 cm"
+            },
+            {
+                id: 6,
+                name: "滾滾小行星喵草玩具",
+                enName: "Asteroid Catnip Toy",
+                price: 290,
+                image: "images/06.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1561948955-570b270e7c36?auto=format&fit=crop&w=600&q=80",
+                tag: "磨牙/貓薄荷",
+                rating: 4.6,
+                reviews: 73,
+                category: "toys",
+                isHot: false,
+                desc: "採用天然有機貓薄荷與木天寮壓製而成的球體，外圍包裹安全無毒的蜂巢狀矽膠保護網，好抓、好啃咬又不易碎裂落屑。",
+                material: "100% 天然有機貓薄荷、食品級矽膠",
+                size: "球體直徑 6.5 cm"
+            },
+            {
+                id: 7,
+                name: "隱形城堡多功能貓砂盆",
+                enName: "Castle Conceal Litter Box",
+                price: 2180,
+                image: "images/07.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=600&q=80",
+                tag: "頂入式/除臭帶砂",
+                rating: 4.9,
+                reviews: 142,
+                category: "toys",
+                isHot: true,
+                desc: "美型北歐風傢俱外觀，結合上頂落砂走道與內部超大空間，有效防止貓砂飛濺，並內建活性碳除臭盒。",
+                material: "環保 PP 塑料、活性碳除臭包",
+                size: "50 x 40 x 42 cm"
+            },
+            {
+                id: 8,
+                name: "輕羽飛揚伸縮逗貓棒",
+                enName: "Feather Magic Teaser Wand",
+                price: 350,
+                image: "images/08.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1513245543132-31f507417b26?auto=format&fit=crop&w=600&q=80",
+                tag: "航太級碳纖維",
+                rating: 4.8,
+                reviews: 189,
+                category: "toys",
+                isHot: true,
+                desc: "航太級碳纖維超輕量伸縮桿，搭配可更換式的天然無毒鵝毛與清脆鈴鐺，完美模擬鳥類與昆蟲飛行軌跡，激發貓咪獵捕本能。",
+                material: "碳纖維伸縮桿、天然燻蒸鵝毛、銅鈴",
+                size: "桿長可伸縮 38 - 98 cm"
+            },
+            {
+                id: 9,
+                name: "不求人自動按摩蹭毛梳",
+                enName: "PurrGroom Wall Comb",
+                price: 390,
+                image: "images/09.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1511044568932-338cba0ad803?auto=format&fit=crop&w=600&q=80",
+                tag: "牆角轉角固定",
+                rating: 4.5,
+                reviews: 61,
+                category: "toys",
+                isHot: false,
+                desc: "可固定於桌腳或牆角軟矽膠梳齒，內置貓薄荷腔室，讓貓咪隨時經過都能自發蹭毛、整理廢毛並享受按摩。",
+                material: "柔軟無毒 TPR 矽膠、貓薄荷夾層",
+                size: "13 x 8.5 cm"
+            },
+            {
+                id: 10,
+                name: "小棉襖兩用外出背心包",
+                enName: "HugVest Harness & Bag",
+                price: 780,
+                image: "images/10.jpg",
+                fallbackImage: "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&w=600&q=80",
+                tag: "防爆衝/附隨身包",
+                rating: 4.8,
+                reviews: 88,
+                category: "toys",
+                isHot: false,
+                desc: "背心式包覆結構均勻分散拉力，防止掙脫；背部附帶可拆卸的小口袋，方便攜帶撿便袋或少量零食，兼具安全與可愛。",
+                material: "三層透氣網布、高強度合金扣環",
+                size: "S / M / L 尺寸可調 (附 1.5m 牽繩)"
+            }
+        ];
+
+        // Cart State Management
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Helper: SVG Fallback Generator for Missing Images
+        function getSvgFallback(id, name) {
+            const colors = ['#EFE6D5', '#E2D4BB', '#F7F3EB', '#C2A382'];
+            const bg = colors[id % colors.length];
+            const cleanName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+                <rect width="100%" height="100%" fill="${bg}"/>
+                <circle cx="200" cy="180" r="60" fill="#E88D67" opacity="0.15"/>
+                <path d="M200 140 C180 140 165 155 165 175 C165 195 200 220 200 220 C200 220 235 195 235 175 C235 155 220 140 200 140 Z" fill="#E88D67"/>
+                <text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="bold" fill="#6E4E32">PurrPerfect</text>
+                <text x="50%" y="78%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="500" fill="#A6825C">${cleanName}</text>
+            </svg>`;
+            return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+        }
+
+        // Render Products Grid
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-stone-400">
+                        <i class="fa-solid fa-cat text-4xl mb-3 block text-warmwood-400">
+                        </i>找不到符合條件的貓咪好物。
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = items.map(p => `
+                <!-- Product Card -->
+                <div class="product-card bg-white rounded-2xl border border-cream-200 overflow-hidden flex flex-col justify-between group">
+                    <div class="relative">
+                        <!-- Image Container with Fallback -->
+                        <div class="img-zoom-container bg-cream-100 h-64 relative flex items-center justify-center">
+                            <img src="${p.image}" 
+                                 onerror="if (this.src.includes('images/')) { this.src='${p.fallbackImage}'; } else { this.onerror=null; this.src='${getSvgFallback(p.id, p.name)}'; }" 
+                                 alt="${p.name}" 
+                                 class="img-zoom w-full h-full object-cover">
+                            
+                            <!-- Category Tag -->
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-stone-700 text-xs font-bold px-2.5 py-1 rounded-full border border-cream-200 shadow-sm">
+                                ${p.tag}
+                            </span>
+
+                            <!-- Quick View Overlay Button -->
+                            <button onclick="openQuickView(${p.id})" class="absolute bottom-3 right-3 bg-white hover:bg-cataccent hover:text-white text-stone-700 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-all opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0" title="快速預覽">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-5">
+                            <div class="flex items-center justify-between text-xs text-amber-400 mb-1">
+                                <div>
+                                    <i class="fa-solid fa-star"></i>
+                                    <span class="font-bold text-stone-700 ml-1">${p.rating}</span>
+                                    <span class="text-stone-400">(${p.reviews})</span>
+                                </div>
+                                <span class="text-stone-400 font-mono">NO.0${p.id}</span>
+                            </div>
+
+                            <h3 class="font-bold text-stone-800 text-base group-hover:text-cataccent transition-colors line-clamp-1">${p.name}</h3>
+                            <p class="text-xs text-stone-400 font-mono mb-2">${p.enName}</p>
+                            <p class="text-xs text-stone-500 line-clamp-2 leading-relaxed mb-4">${p.desc}</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action -->
+                    <div class="px-5 pb-5 pt-0 flex items-center justify-between border-t border-cream-100 mt-auto">
+                        <div>
+                            <span class="text-xs text-stone-400 block">售價</span>
+                            <span class="text-lg font-extrabold text-cataccent">NT$ ${p.price.toLocaleString()}</span>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="bg-cream-100 hover:bg-cataccent hover:text-white text-stone-700 font-semibold text-xs py-2.5 px-4 rounded-xl transition-all flex items-center gap-1.5 active:scale-95">
+                            <i class="fa-solid fa-cart-plus"></i> 加購物車
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Products
+        function filterCategory(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.cat-tab').forEach(btn => {
+                btn.className = "cat-tab px-4 py-2 rounded-full bg-cream-200 text-stone-700 hover:bg-cream-300 transition-all";
+            });
+            const activeBtn = document.getElementById(`btn-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = "cat-tab px-4 py-2 rounded-full bg-warmwood-600 text-white shadow-sm transition-all";
+            }
+
+            if (cat === 'all') {
+                renderProducts(products);
+            } else if (cat === 'hot') {
+                renderProducts(products.filter(p => p.isHot));
+            } else {
+                renderProducts(products.filter(p => p.category === cat));
+            }
+        }
+
+        // Search Handlers
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.enName.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+        function handleSearchMobile() {
+            const query = document.getElementById('mobileSearchInput').value.toLowerCase().trim();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.enName.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        // Cart Drawer Operations
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartBackdrop');
+            const content = document.getElementById('cartContent');
+
+            if (content.classList.contains('translate-x-full')) {
+                drawer.classList.remove('pointer-events-none');
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                backdrop.classList.add('opacity-100');
+                content.classList.remove('translate-x-full');
+            } else {
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.add('translate-x-full');
+                setTimeout(() => drawer.classList.add('pointer-events-none'), 300);
+            }
+        }
+
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            const exist = cart.find(c => c.id === id);
+
+            if (exist) {
+                exist.qty += 1;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+
+            updateCartUI();
+            toggleCartDrawer();
+        }
+
+        function updateCartQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(c => c.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(c => c.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // Count
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = totalQty;
+
+            // Items List
+            const container = document.getElementById('cartItemsContainer');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center text-stone-400 py-12">
+                        <i class="fa-solid fa-basket-shopping text-5xl mb-4 text-cream-300"></i>
+                        <p class="text-sm font-medium">您的購物車目前是空的</p>
+                        <button onclick="toggleCartDrawer()" class="mt-4 text-xs text-cataccent font-bold hover:underline">去逛逛精選商品</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-3 p-3 bg-cream-50 rounded-2xl border border-cream-200">
+                        <img src="${item.image}" onerror="this.onerror=null; this.src='${getSvgFallback(item.id, item.name)}';" class="w-16 h-16 object-cover rounded-xl bg-white border border-cream-200">
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold text-stone-800 line-clamp-1">${item.name}</h4>
+                            <div class="text-xs text-cataccent font-extrabold mt-0.5">NT$ ${item.price.toLocaleString()}</div>
+                            
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center border border-cream-300 bg-white rounded-lg">
+                                    <button onclick="updateCartQty(${item.id}, -1)" class="px-2 py-0.5 text-stone-500 hover:text-stone-800 text-xs">-</button>
+                                    <span class="px-2 text-xs font-bold text-stone-700">${item.qty}</span>
+                                    <button onclick="updateCartQty(${item.id}, 1)" class="px-2 py-0.5 text-stone-500 hover:text-stone-800 text-xs">+</button>
+                                </div>
+                                <button onclick="removeFromCart(${item.id})" class="text-stone-400 hover:text-rose-500 text-xs">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Calculation
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = (subtotal >= 1000 || subtotal === 0) ? 0 : 80;
+            const total = subtotal + shipping;
+
+            document.getElementById('cartSubtotal').innerText = `NT$ ${subtotal.toLocaleString()}`;
+            document.getElementById('cartShipping').innerText = shipping === 0 ? '免費' : `NT$ ${shipping}`;
+            document.getElementById('cartTotal').innerText = `NT$ ${total.toLocaleString()}`;
+        }
+
+        // Quick View Modal
+        function openQuickView(id) {
+            const p = products.find(item => item.id === id);
+            if (!p) return;
+
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = p.image;
+            modalImg.onerror = function() {
+                if (this.src.includes('images/')) {
+                    this.src = p.fallbackImage;
+                } else {
+                    this.onerror = null;
+                    this.src = getSvgFallback(p.id, p.name);
+                }
+            };
+            document.getElementById('modalCategory').innerText = p.tag;
+            document.getElementById('modalTitle').innerText = p.name;
+            document.getElementById('modalSubtitle').innerText = p.enName;
+            document.getElementById('modalDesc').innerText = p.desc;
+            document.getElementById('modalMaterial').innerText = p.material;
+            document.getElementById('modalSize').innerText = p.size;
+            document.getElementById('modalPrice').innerText = `NT$ ${p.price.toLocaleString()}`;
+            document.getElementById('modalRating').innerHTML = `<i class="fa-solid fa-star"></i> `.repeat(Math.floor(p.rating));
+            document.getElementById('modalReviews').innerText = `${p.rating} (${p.reviews} 則評價)`;
+
+            document.getElementById('modalAddBtn').onclick = function() {
+                addToCart(p.id);
+                closeQuickView();
+            };
+
+            document.getElementById('quickViewModal').classList.remove('hidden');
+        }
+
+        function closeQuickView() {
+            document.getElementById('quickViewModal').classList.add('hidden');
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('您的購物車是空的，請先挑選商品！');
+                return;
+            }
+            alert('感謝您的購買！這是一個展示用的電商網站，訂單已成功送出。');
+            cart = [];
+            updateCartUI();
+            toggleCartDrawer();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Separate CSS File content string
+        const cssContent = `/* 
+ * PurrPerfect 喵品選物 - style.css 
+ * 溫馨質感貓咪寵物用品專用獨立樣式表
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+/* 全域變數定義 */
+:root {
+  --color-cream-50: #FDFBF7;
+  --color-cream-100: #F7F3EB;
+  --color-cream-200: #EFE6D5;
+  --color-warmwood-500: #A6825C;
+  --color-warmwood-600: #8A6543;
+  --color-warmwood-700: #6E4E32;
+  --color-cataccent: #E88D67;
+  --color-cataccent-hover: #D0744E;
+}
+
+body {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+  background-color: var(--color-cream-50);
+  color: #4A3E3D;
+  margin: 0;
+  padding: 0;
+}
+
+/* 玻璃擬態選單 */
+.glass-nav {
+  background: rgba(253, 251, 247, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 卡片懸浮動畫效果 */
+.product-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px -8px rgba(166, 130, 92, 0.15);
+}
+
+.img-zoom-container {
+  overflow: hidden;
+}
+
+.img-zoom {
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .img-zoom {
+  transform: scale(1.08);
+}
+
+/* 滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cream-200);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-warmwood-500);
+}`;
+
+        let currentCodeTab = 'html';
+
+        function switchCodeTab(tab) {
+            currentCodeTab = tab;
+            const display = document.getElementById('codeDisplay');
+            const btnHtml = document.getElementById('tab-html');
+            const btnCss = document.getElementById('tab-css');
+
+            if (tab === 'html') {
+                display.innerText = document.documentElement.outerHTML;
+                btnHtml.className = "px-4 py-1.5 rounded-lg text-sm font-semibold bg-cataccent text-white transition-colors";
+                btnCss.className = "px-4 py-1.5 rounded-lg text-sm font-semibold bg-stone-700 text-stone-300 hover:text-white transition-colors";
+            } else {
+                display.innerText = cssContent;
+                btnCss.className = "px-4 py-1.5 rounded-lg text-sm font-semibold bg-cataccent text-white transition-colors";
+                btnHtml.className = "px-4 py-1.5 rounded-lg text-sm font-semibold bg-stone-700 text-stone-300 hover:text-white transition-colors";
+            }
+        }
+
+        function copyCurrentCode() {
+            const text = document.getElementById('codeDisplay').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert(`已成功複製 ${currentCodeTab === 'html' ? 'index.html' : 'style.css'} 程式碼！`);
+        }
+
+        function downloadCodeFiles() {
+            const filename = currentCodeTab === 'html' ? 'index.html' : 'style.css';
+            const content = currentCodeTab === 'html' ? document.documentElement.outerHTML : cssContent;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Initialize Page
+        window.onload = function() {
+            renderProducts(products);
+            switchCodeTab('html');
+        };
+    </script>
+</body>
+</html>
